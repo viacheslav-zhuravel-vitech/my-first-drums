@@ -1,0 +1,16 @@
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.drums-view {
+  width: 1024px;
+  height: 1024px;
+  background-image: url('./assets/background.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
