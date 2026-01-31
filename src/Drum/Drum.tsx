@@ -15,17 +15,18 @@ export type Drum = {
 export const Drum: FC<Drum> = ({size, button, keyCode, audioUrl, top, left}) => {
   const [animation, setAnimation] = useState<boolean>(false)
 
-  const runInteractionAnimation = () => {
+  const runInteractionAnimation = useCallback(() => {
     setAnimation(true)
     setTimeout(() => {
       setAnimation(false)
     }, 300)
-  }
+  }, []);
+
   const playDram = useCallback(() => {
     runInteractionAnimation()
     const audio = new Audio(audioUrl)
     audio.play()
-  }, [audioUrl])
+  }, [audioUrl, runInteractionAnimation])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
