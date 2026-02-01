@@ -1,18 +1,24 @@
 import {type FC, useCallback, useEffect, useState} from "react";
 import drum from './Drum.module.scss'
 import cx from "classnames";
+import type {Drum as DrumType} from "../App.tsx";
+import type {RecordedDrum} from "../App.tsx";
 
-export type Drum = {
-  id: string;
-  size: 'big' | 'small';
-  top?: string;
-  left?: string;
-  audioUrl: string;
-  button: string;
-  keyCode: string;
-}
+type DrumProps = DrumType & { recordDrum: (newDrum: RecordedDrum) => void, recordingInProgress: boolean };
 
-export const Drum: FC<Drum> = ({size, button, keyCode, audioUrl, top, left}) => {
+export const Drum: FC<DrumProps> = (
+  {
+    id,
+    size,
+    button,
+    keyCode,
+    audioUrl,
+    top,
+    left,
+    recordDrum,
+    recordingInProgress
+  }
+) => {
   const [animation, setAnimation] = useState<boolean>(false)
 
   const runInteractionAnimation = useCallback(() => {
@@ -24,9 +30,10 @@ export const Drum: FC<Drum> = ({size, button, keyCode, audioUrl, top, left}) => 
 
   const playDram = useCallback(() => {
     runInteractionAnimation()
+    if (recordingInProgress) recordDrum({id: id, timestamp: new Date()})
     const audio = new Audio(audioUrl)
     audio.play()
-  }, [audioUrl, runInteractionAnimation])
+  }, [audioUrl, id, recordDrum, recordingInProgress, runInteractionAnimation])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

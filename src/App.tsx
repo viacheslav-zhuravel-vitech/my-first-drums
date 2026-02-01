@@ -9,10 +9,52 @@ import ride from './assets/drums/ride.wav'
 import snare from './assets/drums/snare.wav'
 import tink from './assets/drums/tink.wav'
 import tom from './assets/drums/tom.wav'
-import {useMemo} from "react";
+import {useCallback, useMemo, useState} from "react";
+import {Header} from "./Header/Header.tsx";
+import {RecordingPanel} from "./RecordingPanel/Recordingpanel.tsx";
 
+
+export type RecordedDrum  = {
+  id: string,
+  timestamp: Date,
+}
+
+export type Track = {
+  name: string,
+  record: Array<RecordedDrum>
+}
+
+export type Drum = {
+  id: string;
+  size: 'big' | 'small';
+  top?: string;
+  left?: string;
+  audioUrl: string;
+  button: string;
+  keyCode: string;
+}
 
 function App() {
+
+  const [tracks, setTracks] = useState<Array<Track>| []>([]);
+  const [recordingInProgress, setRecordingInProgress] = useState<boolean>(false)
+  const [newRecord, setNewRecord] = useState<Array<RecordedDrum> | []>([])
+
+  const toggleRecording = useCallback(() => {
+    if (recordingInProgress) {
+      setRecordingInProgress(false)
+      if(newRecord.length) {
+        setTracks(prevState => [...prevState, {name : `Track ${prevState.length +1}`, record: newRecord }])
+        setNewRecord([])
+      }
+    } else {
+      setRecordingInProgress(true)
+    }
+  }, [newRecord, recordingInProgress]);
+
+  const recordDrum = useCallback( (newDrum: RecordedDrum) => {
+    setNewRecord(prevState => [...prevState, newDrum])
+  },[])
 
   const drums: Array<Drum> = useMemo(() => [
       {
@@ -102,10 +144,12 @@ function App() {
 
   return (
     <main className={styles.page}>
+      <Header/>
+      <RecordingPanel tracks={tracks} toggleRecording={toggleRecording} recordingInProgress={recordingInProgress}/>
       <div className={styles['drums-view']}>
         {drums.map((drum) => (
           <Drum id={drum.id} size={drum.size} audioUrl={drum.audioUrl} button={drum.button}
-                keyCode={drum.keyCode} top={drum.top} left={drum.left}/>
+                keyCode={drum.keyCode} top={drum.top} left={drum.left} recordDrum={recordDrum} recordingInProgress={recordingInProgress}/>
         ))}
       </div>
     </main>
