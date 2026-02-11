@@ -1,4 +1,4 @@
-import type {FC} from "react";
+import {type FC, Fragment} from "react";
 import panelStyles from "../RecordingPanel/RecordingPanel.module.scss";
 import recordingStyles from './RecordDetailsPanel.module.scss'
 import {useDrums} from "../useDrums.tsx";
@@ -8,7 +8,7 @@ export const RecordDetailsPanel: FC = () => {
   if (!selectedTrack) {
     return (
       <section className={panelStyles.panel}>
-        <h2>No track selected</h2>
+        <h2 className={recordingStyles.empty}>No track selected</h2>
       </section>
     )
   }
@@ -18,14 +18,14 @@ export const RecordDetailsPanel: FC = () => {
       <div className={recordingStyles.recordDetails}>
         {selectedTrack.record.map((recordedDrum, index) => {
           if (index) return (
-            <>
+            <Fragment key={index}>
               <div
                 className={recordingStyles.timeout}>{+recordedDrum.timestamp - +selectedTrack.record[index - 1].timestamp} ms
               </div>
               <div className={recordingStyles.drumName}>{recordedDrum.id}</div>
-            </>
+            </Fragment>
           )
-          return <div className={recordingStyles.drumName}>{recordedDrum.id}</div>
+          return <div key={index} className={recordingStyles.drumName}>{recordedDrum.id}</div>
         })}
       </div>
 

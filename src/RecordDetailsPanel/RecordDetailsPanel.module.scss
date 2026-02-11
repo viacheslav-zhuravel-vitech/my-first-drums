@@ -6,10 +6,15 @@
 }
 
 .trackName {
-  margin: 30px auto;
+  margin: 30px auto 40px auto;
   color: rgba(232, 92, 92, 0.9);
   font-family: "New Rocker", system-ui;
+}
 
+.empty {
+  margin: auto;
+  color: rgba(232, 92, 92, 0.9);
+  font-family: "New Rocker", system-ui;
 }
 
 .drumName {
