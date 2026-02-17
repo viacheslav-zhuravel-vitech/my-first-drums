@@ -1,9 +1,9 @@
 import {type FC, Fragment, useMemo} from "react";
 import panelStyles from "../RecordingPanel/RecordingPanel.module.scss";
 import recordingStyles from './RecordDetailsPanel.module.scss'
-import {useDrums} from "../useDrums.tsx";
+import {type RecordedDrum, useDrums} from "../useDrums.tsx";
 import {FaPlay} from "react-icons/fa";
-import { FaSave } from "react-icons/fa";
+import {FaSave} from "react-icons/fa";
 import cx from "classnames";
 
 export const RecordDetailsPanel: FC = () => {
@@ -12,7 +12,7 @@ export const RecordDetailsPanel: FC = () => {
   const selectedTrackWasEdited = useMemo(() => {
     const originalTrack = tracks.find(track => track.name === selectedTrack?.name)
     return JSON.stringify(originalTrack) !== JSON.stringify(selectedTrack)
-  },[selectedTrack, tracks])
+  }, [selectedTrack, tracks])
 
   if (!selectedTrack) {
     return (
@@ -40,13 +40,23 @@ export const RecordDetailsPanel: FC = () => {
                 className={recordingStyles.timeout}>
               </input>
               ms
-              <div className={recordingStyles.drumName}>{recordedDrum.id}</div>
+              <DrumSelector recordedDrum={recordedDrum} index={index}/>
             </Fragment>
           )
-          return <div key={index} className={recordingStyles.drumName}>{recordedDrum.id}</div>
+          return <DrumSelector key={index} recordedDrum={recordedDrum} index={index}/>
         })}
       </div>
 
     </section>
+  )
+}
+
+const DrumSelector: FC<{recordedDrum: RecordedDrum, index: number}> = ({recordedDrum, index}) => {
+  const {drums, editDrum} = useDrums()
+  return (
+    <select className={recordingStyles.drumSelector} value={recordedDrum.id}
+            onChange={({target: {value}}) => editDrum(index, value)}>
+      {drums.map((drum, index) => <option value={drum.id} key={drum.id + index}>{drum.id}</option>)}
+    </select>
   )
 }

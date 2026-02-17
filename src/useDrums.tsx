@@ -36,7 +36,8 @@ type Store = {
   playDrum: (drumId: string) => void,
   playTrack: (track: Track, drumIndex?: number) => void,
   selectTrack: (track: Track) => void,
-  editDelay: (index: number, newDelay: number) => void
+  editDelay: (index: number, newDelay: number) => void,
+  editDrum: (index: number, drumId: string) => void
 }
 
 export type RecordedDrum = {
@@ -214,6 +215,12 @@ export const useDrums = create<Store>()(persist((set, get) => ({
     const prevValue = selectedTrack.record[index].timestamp-selectedTrack.record[index-1].timestamp
     const diff = newValue - prevValue;
     const updatedRecord = selectedTrack.record.map((drum: RecordedDrum, i: number) => i >= index ? {...drum, timestamp: drum.timestamp + diff} : drum)
+    set({selectedTrack: {...selectedTrack, record: updatedRecord}})
+  },
+  editDrum: (index, drumId) => {
+    const {selectedTrack} = get()
+    if (!selectedTrack?.record) return;
+    const updatedRecord = selectedTrack.record.map((drum: RecordedDrum, i: number) => i === index ? {...drum, id: drumId} : drum)
     set({selectedTrack: {...selectedTrack, record: updatedRecord}})
   }
 }), {name: 'drums-store'}))
