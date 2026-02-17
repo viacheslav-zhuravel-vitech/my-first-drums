@@ -9,6 +9,7 @@ import ride from "./assets/drums/ride.wav";
 import snare from "./assets/drums/snare.wav";
 import tom from "./assets/drums/tom.wav";
 import {demoRockTrack} from "./demoTrack.tsx";
+import {persist} from "zustand/middleware";
 
 export type Drum = {
   id: string;
@@ -39,7 +40,7 @@ type Store = {
 
 export type RecordedDrum = {
   id: string,
-  timestamp: Date,
+  timestamp: number,
 }
 
 export type Track = {
@@ -47,7 +48,7 @@ export type Track = {
   record: Array<RecordedDrum>
 }
 
-export const useDrums = create<Store>((set, get) => ({
+export const useDrums = create<Store>()(persist((set, get) => ({
   drums: [
     {
       id: 'boom',
@@ -184,7 +185,7 @@ export const useDrums = create<Store>((set, get) => ({
     const {runInteractionAnimationForDrum, recordingInProgress, recordDrum, drums} = get()
 
     runInteractionAnimationForDrum(drumId)
-    if (recordingInProgress) recordDrum({id: drumId, timestamp: new Date()})
+    if (recordingInProgress) recordDrum({id: drumId, timestamp: Date.now()})
     const audio = new Audio(drums.find(drum => drum.id === drumId)?.audioUrl)
     audio.play()
   },
@@ -196,7 +197,7 @@ export const useDrums = create<Store>((set, get) => ({
       const prev = track.record[i - 1];
 
       if (prev) {
-        const delay = +current.timestamp - +prev.timestamp;
+        const delay = current.timestamp - prev.timestamp;
         await new Promise(resolve => setTimeout(resolve, delay));
       }
 
@@ -206,4 +207,4 @@ export const useDrums = create<Store>((set, get) => ({
   selectTrack: (track) => {
     set({selectedTrack: track})
   }
-}))
+}), {name: 'drums-store'}))

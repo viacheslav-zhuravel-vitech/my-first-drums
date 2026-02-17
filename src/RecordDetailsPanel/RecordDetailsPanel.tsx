@@ -20,7 +20,7 @@ export const RecordDetailsPanel: FC = () => {
           if (index) return (
             <Fragment key={index}>
               <div
-                className={recordingStyles.timeout}>{+recordedDrum.timestamp - +selectedTrack.record[index - 1].timestamp} ms
+                className={recordingStyles.timeout}>{recordedDrum.timestamp - selectedTrack.record[index - 1].timestamp} ms
               </div>
               <div className={recordingStyles.drumName}>{recordedDrum.id}</div>
             </Fragment>
