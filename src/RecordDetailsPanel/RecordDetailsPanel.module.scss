@@ -5,6 +5,21 @@
   gap: 10px;
 }
 
+.controls {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: rgba(255, 151, 0);
+  cursor: pointer;
+  margin: 0 0 20px 6px;
+}
+
+.controlsDisabled {
+  color: gray;
+  cursor: not-allowed;
+}
+
 .trackName {
   margin: 30px auto 40px auto;
   color: rgba(232, 92, 92, 0.9);

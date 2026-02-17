@@ -35,7 +35,8 @@ type Store = {
   runInteractionAnimationForDrum: (drumId: string) => void,
   playDrum: (drumId: string) => void,
   playTrack: (track: Track, drumIndex?: number) => void,
-  selectTrack: (track: Track) => void
+  selectTrack: (track: Track) => void,
+  editDelay: (index: number, newDelay: number) => void
 }
 
 export type RecordedDrum = {
@@ -206,5 +207,13 @@ export const useDrums = create<Store>()(persist((set, get) => ({
   },
   selectTrack: (track) => {
     set({selectedTrack: track})
+  },
+  editDelay: (index, newValue) => {
+    const {selectedTrack} = get()
+    if (!selectedTrack?.record) return;
+    const prevValue = selectedTrack.record[index].timestamp-selectedTrack.record[index-1].timestamp
+    const diff = newValue - prevValue;
+    const updatedRecord = selectedTrack.record.map((drum: RecordedDrum, i: number) => i >= index ? {...drum, timestamp: drum.timestamp + diff} : drum)
+    set({selectedTrack: {...selectedTrack, record: updatedRecord}})
   }
 }), {name: 'drums-store'}))
